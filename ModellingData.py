@@ -26,14 +26,10 @@ def read_training_data():
     return x_values, y_values
 
 
-# this method reads the testing data
-def read_testing_data():
-    # read the testing data
-    test_data_df = pandas.read_csv('TestingData.txt', header=None)
-    # store testing values
-    x_test_values = test_data_df.values.tolist()
-    return x_test_values
-
+# read the testing data
+test_data_df = pandas.read_csv('TestingData.txt', header=None)
+# store testing values
+x_pred = test_data_df.values.tolist()
 
 # split the training data using sklearn train_test_split
 # train_test_split = splits arrays or matrices into random train and test subsets
@@ -45,7 +41,7 @@ x_train, x_test, y_train, y_test = train_test_split(read_training_data()[0], rea
 scaler = preprocessing.MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.fit_transform(x_test)
-x_pred = scaler.fit_transform(read_testing_data())
+x_pred = scaler.fit_transform(x_pred)
 x_all = scaler.fit_transform(read_training_data()[0])
 
 # Fit the LDA model
@@ -58,3 +54,8 @@ cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
 # evaluate model
 scores = cross_val_score(model, x_all, read_training_data()[1], scoring='accuracy', cv=cv, n_jobs=-1)
 print('Mean Accuracy: %.3f (%.3f)' % (np.mean(scores), np.std(scores)))
+
+# Print to file "TestingResults.txt"
+predictions_df = pandas.DataFrame({'Prediction': y_pred})
+test_data_df = test_data_df.join(predictions_df)
+test_data_df.to_csv("TestingResults.txt", header=None, index=None)
