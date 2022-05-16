@@ -3,16 +3,38 @@
 # The predictions for the testing data are provided in the TestingResults.txt as requested on the specification
 
 import pandas
+import numpy as np
+from sklearn.model_selection import train_test_split
 
-#read the training data using panda.read_csv
-trainingData = pandas.read_csv('TrainingData.txt', header=None)
 
-#print(trainingData)
+# this method reads the training data
+# returns the x and y values
+def read_training_data():
+    # read the training data using panda.read_csv
+    training_data_df = pandas.read_csv('TrainingData.txt', header=None)
+    # get training data dataframe by removing last column (binary value)
+    training_data = training_data_df.drop(24, axis=1)
+    # get the x values of each modeling curve
+    x_values = training_data.values.tolist()
+    # get binary value (our y values) that indicates normal or abnormal and store in list
+    y_values = training_data_df[24].tolist()
 
-# get binary value that indicates normal or abnormal and store in list
-binary_values = trainingData[24].tolist()
+    x_values = np.array(x_values)
+    y_values = np.array(y_values)
+    return x_values, y_values
 
-# get training data by removing last column (binary value)
-trainingData = trainingData.drop(24, axis=1)
-# get the x values of each modeling curve
-x_training = trainingData.values.tolist()
+
+# this method reads the testing data
+def read_testing_data():
+    # read the testing data
+    test_data_df = pandas.read_csv('TestingData.txt', header=None)
+    # store testing values
+    x_test_values = test_data_df.values.tolist()
+    return x_test_values
+
+
+# split the training data using sklearn train_test_split
+# train_test_split = splits arrays or matrices into random train and test subsets
+x_train, x_test, y_train, y_test = train_test_split(read_training_data()[0], read_training_data()[1], test_size=0.2,
+                                                    random_state=0)
+
