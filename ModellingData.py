@@ -9,3 +9,10 @@ trainingData = pandas.read_csv('TrainingData.txt', header=None)
 
 #print(trainingData)
 
+# get binary value that indicates normal or abnormal and store in list
+binary_values = trainingData[24].tolist()
+
+# get training data by removing last column (binary value)
+trainingData = trainingData.drop(24, axis=1)
+# get the x values of each modeling curve
+x_training = trainingData.values.tolist()
