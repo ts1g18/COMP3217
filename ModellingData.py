@@ -2,3 +2,10 @@
 # Its purpose is to provide the predicted binary values (0 or 1) based on the training algorithm implemented
 # The predictions for the testing data are provided in the TestingResults.txt as requested on the specification
 
+import pandas
+
+#read the training data using panda.read_csv
+trainingData = pandas.read_csv('TrainingData.txt', header=None)
+
+#print(trainingData)
+
