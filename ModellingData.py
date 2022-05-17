@@ -38,11 +38,11 @@ x_train, x_test, y_train, y_test = train_test_split(read_training_data()[0], rea
 
 # scale data to make it easy for model to learn and understand the problem
 # simple way is to use sklearn preprocessing to use MinMaxScaler()
-scaler = preprocessing.MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.fit_transform(x_test)
-x_pred = scaler.fit_transform(x_pred)
-x_all = scaler.fit_transform(read_training_data()[0])
+scale_data = preprocessing.MinMaxScaler()
+x_train = scale_data.fit_transform(x_train)
+x_test = scale_data.fit_transform(x_test)
+x_pred = scale_data.fit_transform(x_pred)
+x_all = scale_data.fit_transform(read_training_data()[0])
 
 # Fit the LDA model
 model = LinearDiscriminantAnalysis()
