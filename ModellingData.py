@@ -20,7 +20,6 @@ def read_training_data():
     x_values = training_data.values.tolist()
     # get binary value (our y values) that indicates normal or abnormal and store in list
     y_values = training_data_df[24].tolist()
-
     x_values = np.array(x_values)
     y_values = np.array(y_values)
     return x_values, y_values
@@ -29,7 +28,7 @@ def read_training_data():
 # read the testing data
 test_data_df = pandas.read_csv('TestingData.txt', header=None)
 # store testing values
-x_pred = test_data_df.values.tolist()
+x_classify = test_data_df.values.tolist()
 
 # split the training data using sklearn train_test_split
 # train_test_split = splits arrays or matrices into random train and test subsets
@@ -41,13 +40,13 @@ x_train, x_test, y_train, y_test = train_test_split(read_training_data()[0], rea
 scale_data = preprocessing.MinMaxScaler()
 x_train = scale_data.fit_transform(x_train)
 x_test = scale_data.fit_transform(x_test)
-x_pred = scale_data.fit_transform(x_pred)
+x_classify = scale_data.fit_transform(x_classify)
 x_all = scale_data.fit_transform(read_training_data()[0])
 
 # Fit the LDA model
 model = LinearDiscriminantAnalysis()
 model.fit(x_train, y_train)
-y_pred = model.predict(x_pred)
+y_pred = model.predict(x_classify)
 y_pred = [int(x) for x in y_pred]
 # Define method to evaluate model
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
