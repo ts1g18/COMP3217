@@ -5,6 +5,8 @@ import pandas
 # returns all user&task ids, ready times, deadlines, maximum scheduled energy per hour and energy demand
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum
 
+users = ['user1', 'user2', 'user3', 'user4', 'user5']
+
 
 def read_tasks():
     # COMP3217CW2Input.xlsx contains the user task information
@@ -59,7 +61,7 @@ def generate_lp_model(tasks):
         # loop between the interval of ready_time and deadline since the appliance can only execute within this interval
         for i in range(ready_time, deadline + 1):
             # initialise the decision variables
-            # add '_<number>' to create unique names for eash task. e.g. user1_task1_20
+            # add '_<number>' to create unique names for each task. e.g. user1_task1_20
             # upper limit is the max energy per hour
             x = LpVariable(name=user_tasks[counter] + '_' + str(i), lowBound=0, upBound=max_energy)
             time_slot.append(x)
@@ -74,6 +76,7 @@ def generate_lp_model(tasks):
         eq.append(user_task_list)
         # Calculate the sum of a list of linear expressions
         # add the obj function to the model
+        # the sum should be equal to the task energy demand
         lp_model += lpSum(user_task_list) == task_energy_demand
 
     # Add the objective function to the model
@@ -85,6 +88,10 @@ def generate_lp_model(tasks):
     lp_model += lpSum(task_cost)
 
     return lp_model
+
+# TODO:
+# method to generate histograms for abnormal curves
+# solve the schedule problem
 
 read_tasks()
 generate_lp_model(tasks)
