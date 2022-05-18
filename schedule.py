@@ -22,9 +22,16 @@ def read_tasks():
 
         all_tasks.append(task)
 
-    print(user_tasks)
+    # print(user_tasks)
 
-    return all_tasks, user_tasks, ready_time, deadline, max_energy_per_hour, energy_demand
+    # read predicted labels
+    testing_results = pandas.read_csv('TestingResults.txt', header=None)
+    testing_results_no_labels = testing_results.drop(24, axis=1)
+    # print(testing_results)
+    x = testing_results_no_labels.values.tolist()
+    y = testing_results[24].tolist()
+
+    return all_tasks, user_tasks, x, y
 
 
 read_tasks()
