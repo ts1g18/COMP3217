@@ -1,11 +1,11 @@
 # This class will implement a method to create plots of all abnormal data
+import numpy as np
 import pandas
 
 # this method reads all of the user tasks from COMP3217CW2Input.xlsx
 # returns all user&task ids, ready times, deadlines, maximum scheduled energy per hour and energy demand
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum
-
-users = ['user1', 'user2', 'user3', 'user4', 'user5']
+import matplotlib.pyplot as plt
 
 
 def read_tasks():
@@ -89,11 +89,53 @@ def generate_lp_model(tasks):
 
     return lp_model
 
+# this method takes the lp_model as a parameter
+# it loops through the array of users, then through each hour and then through each variable in the lp_model
+# plots a graph of the energy usage of each user at each hour in the form of a bar chart
+def plot(lp_model):
+    # array of arrays to store each user plots
+    each_user_plots = []
+    # need set of users for graphs (y labels) and hours (x labels)
+    users = ['user1', 'user2', 'user3', 'user4', 'user5']
+    hours = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18',
+             '19', '20', '21', '22', '23']
+
+    for user in users:
+        # list to store all tasks at given time
+        use_at_hour = []
+        for hour in hours:
+            hour_list = []
+            counter = 0
+            for var in lp_model.variables():
+                if user == var.name.split('_')[0] and str(hour) == var.name.split('_')[2]:
+                    counter += 1
+                    hour_list.append(var.value())
+            use_at_hour.append(sum(hour_list))
+        each_user_plots.append(use_at_hour)
+
+    user1_data = each_user_plots[0]
+    user2_data = each_user_plots[1]
+    user3_data = each_user_plots[2]
+    user4_data = each_user_plots[3]
+    user5_data = each_user_plots[4]
+
+    plt.xlabel('Hour')
+    plt.ylabel('Energy Usage')
+    plt.bar(np.arange(23), user1_data)
+    plt.bar(np.arange(23), user2_data)
+    plt.bar(np.arange(23), user3_data)
+    plt.bar(np.arange(23), user4_data)
+    plt.bar(np.arange(23), user5_data)
+    plt.legend(users)
+    # plt.show()
+
+    return each_user_plots
+
+
 # TODO:
-# method to generate histograms for abnormal curves
 # solve the schedule problem
 
 read_tasks()
-generate_lp_model(tasks)
-
-
+model = generate_lp_model(tasks)
+answer = model.solve()
+plot(model)
