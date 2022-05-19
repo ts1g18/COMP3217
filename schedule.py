@@ -94,6 +94,7 @@ def generate_lp_model(tasks):
 # it loops through the array of users, then through each hour and then through each variable in the lp_model
 # plots a graph of the energy usage of each user at each hour in the form of a bar chart
 # each bar shows the total energy usage from all 5 users during the corresponding hour
+# it saves the graph in Abnormal Graphs directory
 def plot(model, n):
     # array of arrays to store each user plots
     each_user_plots = []
@@ -130,7 +131,7 @@ def plot(model, n):
     plt.bar(np.arange(23), user4_energy)
     plt.bar(np.arange(23), user5_energy)
     plt.legend(users)
-    plt.savefig('Testing data#' + str(n) + '.png')
+    plt.savefig('Abnormal Graphs\\' + 'Testing data#' + str(n) + '.png')
 
     return each_user_plots
 
