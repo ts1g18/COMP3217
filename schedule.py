@@ -89,10 +89,12 @@ def generate_lp_model(tasks):
 
     return lp_model
 
-# this method takes the lp_model as a parameter
+
+# this method takes the lp_model as a parameter and a counter n
 # it loops through the array of users, then through each hour and then through each variable in the lp_model
 # plots a graph of the energy usage of each user at each hour in the form of a bar chart
-def plot(lp_model):
+# each bar shows the total energy usage from all 5 users during the corresponding hour
+def plot(model, n):
     # array of arrays to store each user plots
     each_user_plots = []
     # need set of users for graphs (y labels) and hours (x labels)
@@ -106,36 +108,43 @@ def plot(lp_model):
         for hour in hours:
             hour_list = []
             counter = 0
-            for var in lp_model.variables():
+            for var in model.variables():
                 if user == var.name.split('_')[0] and str(hour) == var.name.split('_')[2]:
                     counter += 1
                     hour_list.append(var.value())
             use_at_hour.append(sum(hour_list))
         each_user_plots.append(use_at_hour)
 
-    user1_data = each_user_plots[0]
-    user2_data = each_user_plots[1]
-    user3_data = each_user_plots[2]
-    user4_data = each_user_plots[3]
-    user5_data = each_user_plots[4]
+    # get each user's energy usage
+    user1_energy = each_user_plots[0]
+    user2_energy = each_user_plots[1]
+    user3_energy = each_user_plots[2]
+    user4_energy = each_user_plots[3]
+    user5_energy = each_user_plots[4]
 
     plt.xlabel('Hour')
     plt.ylabel('Energy Usage')
-    plt.bar(np.arange(23), user1_data)
-    plt.bar(np.arange(23), user2_data)
-    plt.bar(np.arange(23), user3_data)
-    plt.bar(np.arange(23), user4_data)
-    plt.bar(np.arange(23), user5_data)
+    plt.bar(np.arange(23), user1_energy)
+    plt.bar(np.arange(23), user2_energy)
+    plt.bar(np.arange(23), user3_energy)
+    plt.bar(np.arange(23), user4_energy)
+    plt.bar(np.arange(23), user5_energy)
     plt.legend(users)
-    # plt.show()
+    plt.savefig('Testing data#' + str(n) + '.png')
 
     return each_user_plots
 
 
-# TODO:
-# solve the schedule problem
+x = read_tasks()[2]
+y = read_tasks()[3]
 
-read_tasks()
-model = generate_lp_model(tasks)
-answer = model.solve()
-plot(model)
+# loop through the testing data
+# if the binary value (y) is 1 (abnormal) then
+    # generate the lp_model
+    # solve the model
+    # plot the data for each day
+for counter, prices in enumerate(x):
+    if y[counter] == 1:
+        lp_model = generate_lp_model(tasks)
+        solved_model = lp_model.solve()
+        plot(lp_model, counter + 1)
