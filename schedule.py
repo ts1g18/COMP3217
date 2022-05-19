@@ -43,7 +43,6 @@ user_tasks = read_tasks()[1]
 
 
 def generate_lp_model(tasks):
-    prices = read_tasks()[2]
     decision_vars = []
     task_cost = []
     eq = []
@@ -81,9 +80,8 @@ def generate_lp_model(tasks):
 
     # Add the objective function to the model
     for counter, task in enumerate(tasks):
-        prices_for_task = prices[counter]
         for decision_var in decision_vars[counter]:
-            price = prices_for_task[int(decision_var.name.split('_')[2])]
+            price = prices[int(decision_var.name.split('_')[2])]
             task_cost.append(price * decision_var)
     lp_model += lpSum(task_cost)
 
@@ -133,12 +131,13 @@ def plot(model, n):
     plt.legend(users)
     plt.title('Abnormal Graph: ' + str(n))
     plt.savefig('Abnormal Graphs\\' + 'Abnormal plot#' + str(n) + '.png')
+    plt.clf()
 
     return each_user_plots
 
 
-x = read_tasks()[2]
-y = read_tasks()[3]
+tasks, task_names, x, y = read_tasks()
+
 
 # loop through the testing data
 # if the binary value (y) is 1 (abnormal) then
@@ -150,3 +149,4 @@ for counter, prices in enumerate(x):
         lp_model = generate_lp_model(tasks)
         solved_model = lp_model.solve()
         plot(lp_model, counter + 1)
+        print(solved_model)
