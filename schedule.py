@@ -131,6 +131,7 @@ def plot(model, n):
     plt.bar(np.arange(23), user4_energy)
     plt.bar(np.arange(23), user5_energy)
     plt.legend(users)
+    plt.title('Abnormal Graph: ' + str(n))
     plt.savefig('Abnormal Graphs\\' + 'Testing data#' + str(n) + '.png')
 
     return each_user_plots
